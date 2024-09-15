@@ -25,4 +25,9 @@ public class RoleServiceImpl implements RoleService {
     public Collection<Role> getSelectedRoles(Set<String> roles) {
         return roleDao.findAllByNameIn(roles);
     }
+
+    @Override
+    public void addRole(Role role) {
+        roleDao.save(role);
+    }
 }

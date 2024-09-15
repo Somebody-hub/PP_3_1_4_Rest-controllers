@@ -10,4 +10,6 @@ public interface RoleService {
     List<Role> getAllRoles();
 
     Collection<Role> getSelectedRoles(Set<String> roles);
+
+    void addRole(Role role);
 }
