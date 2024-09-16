@@ -1,11 +1,14 @@
 package ru.kata.spring.boot_security.demo.model;
 
 
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import java.util.Collection;
+import java.util.Set;
 
 @Entity
 @Table(name = "Users")
@@ -16,37 +19,38 @@ public class User implements UserDetails {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    private String FirstName;
+    private String firstName;
 
-    private String LastName;
+    private String lastName;
 
-    private int Age;
+    private int age;
 
     private String email;
 
     private boolean deleted;
 
-    private String Password;
+    private String password;
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany
+    @LazyCollection(LazyCollectionOption.FALSE)
     @JoinTable(
             name = "users_roles",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "roles_id"))
-    private Collection<Role> Roles;
+    private Set<Role> roles;
 
     public User() {
         this.deleted = false;
     }
 
-    public User(String FirstName, String LastName, int Age, String Email, String Password, Collection<Role> roles) {
-        this.FirstName = FirstName;
-        this.LastName = LastName;
-        this.Age = Age;
+    public User(String FirstName, String LastName, int Age, String Email, String Password, Set<Role> roles) {
+        this.firstName = FirstName;
+        this.lastName = LastName;
+        this.age = Age;
         this.email = Email;
         this.deleted = false;
-        this.Password = Password;
-        this.Roles = roles;
+        this.password = Password;
+        this.roles = roles;
     }
 
     public void setId(Long id) {
@@ -58,19 +62,19 @@ public class User implements UserDetails {
     }
 
     public void setFirstName(String firstName) {
-        this.FirstName = firstName;
+        this.firstName = firstName;
     }
 
     public String getFirstName() {
-        return FirstName;
+        return firstName;
     }
 
     public void setAge(int age) {
-        Age = age;
+        this.age = age;
     }
 
     public int getAge() {
-        return Age;
+        return age;
     }
 
     public void setEmail(String email) {
@@ -90,43 +94,43 @@ public class User implements UserDetails {
     }
 
     public String getLastName() {
-        return LastName;
+        return lastName;
     }
 
     public void setLastName(String lastName) {
-        LastName = lastName;
+        this.lastName = lastName;
     }
 
     public void setPassword(String password) {
-        Password = password;
+        this.password = password;
     }
 
-    public Collection<Role> getRoles() {
-        return this.Roles;
+    public Set<Role> getRoles() {
+        return this.roles;
     }
 
-    public void setRoles(Collection<Role> roles) {
-        Roles = roles;
+    public void setRoles(Set<Role> roles) {
+        this.roles = roles;
     }
 
     @Override
     public String toString() {
         return "id = " + this.id
-                + "\n" + "FirstName = " + this.FirstName
-                + "\n" + "LastName = " + this.LastName
-                + "\n" + "Age = " + this.Age
+                + "\n" + "FirstName = " + this.firstName
+                + "\n" + "lastName = " + this.lastName
+                + "\n" + "age = " + this.age
                 + "\n" + "Email " + this.email
                 + "\n" + "deleted" + this.deleted;
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Roles;
+        return roles;
     }
 
     @Override
     public String getPassword() {
-        return this.Password;
+        return this.password;
     }
 
     @Override

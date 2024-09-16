@@ -8,10 +8,7 @@ import ru.kata.spring.boot_security.demo.service.RoleService;
 import ru.kata.spring.boot_security.demo.service.UserService;
 
 import javax.annotation.PostConstruct;
-import java.util.HashSet;
 import java.util.Set;
-
-import static com.fasterxml.jackson.databind.type.LogicalType.Collection;
 
 @Component
 public class INIT {
