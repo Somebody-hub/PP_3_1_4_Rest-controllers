@@ -2,8 +2,9 @@ package ru.kata.spring.boot_security.demo.controller;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 import ru.kata.spring.boot_security.demo.model.User;
@@ -11,7 +12,6 @@ import ru.kata.spring.boot_security.demo.service.RoleService;
 import ru.kata.spring.boot_security.demo.service.UserService;
 
 import java.security.Principal;
-import java.util.Set;
 
 
 @Controller
@@ -28,41 +28,25 @@ public class AdminController {
     }
 
     @GetMapping("")
-    public String printUsers(ModelMap model) {
-        model.addAttribute("usersList", userService.getAllUsers());
+    public String printUsers(ModelMap model, @AuthenticationPrincipal UserDetails actualUser) {
+        model.addAttribute("users", userService.getAllUsers());
+        model.addAttribute("roles", roleService.getAllRoles());
+        model.addAttribute("newUser", new User());
+        model.addAttribute("actualUser", actualUser);
         return "Admin/allUsers";
     }
 
-    @GetMapping("/{id}/edit")
-    public String editUser(@PathVariable("id") Long id, Model model) {
-        User user = userService.getUserById(id);
-        model.addAttribute("user", userService.getUserById(id));
-        model.addAttribute("roles", roleService.getAllRoles());
-        return "Admin/editUser";
-    }
-
-    @PostMapping("/{id}")
-    public String updateUser(@ModelAttribute("user") User user, @PathVariable("id") Long id,
-                             @RequestParam(name = "selectedRoles", required = false) Set<String> selectedRoles) {
-        user.setRoles(roleService.getSelectedRoles(selectedRoles));
+    @PostMapping("/{id}/edit")
+    public String updateUser(@ModelAttribute("user") User user, @PathVariable("id") Long id) {
         userService.updateUser(id, user);
         return "redirect:/Admin";
     }
 
-    @GetMapping("/new")
-    public String newUser(Model model) {
-        model.addAttribute("user", new User());
-        model.addAttribute("roles", roleService.getAllRoles());
-        return "Admin/createUser";
-    }
-
     @PostMapping("/new")
-    public String addUser(@ModelAttribute("user") User user,
-                          @RequestParam(name = "selectedRoles", required = false) Set<String> selectedRoles) {
+    public String addUser(@ModelAttribute("user") User user) {
         if (userService.findByEmail(user.getEmail()) != null) {
             return "redirect:/Admin";
         }
-        user.setRoles(roleService.getSelectedRoles(selectedRoles));
         userService.addUser(user);
         return "redirect:/Admin";
     }
