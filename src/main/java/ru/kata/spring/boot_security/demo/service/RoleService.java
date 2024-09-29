@@ -10,5 +10,5 @@ public interface RoleService {
 
     Set<Role> getSelectedRoles(Set<String> roles);
 
-    void addRole(Role role);
+    Role addRole(Role role);
 }

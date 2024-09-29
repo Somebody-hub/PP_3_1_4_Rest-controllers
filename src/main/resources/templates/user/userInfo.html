@@ -33,10 +33,10 @@
                 <ul class="nav nav-pills flex-column">
                     <li class="nav-item", th:each="user : ${user}">
                         <a class="nav-link" th:if="${#strings.contains(user.getAuthorities(),'ADMIN')}"
-                           th:href="@{/Admin}">Admin</a>
+                           th:href="@{/users}">Admin</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link active" th:href="@{/User}">User</a>
+                        <a class="nav-link active" th:href="@{/userInfo}">User</a>
                     </li>
                 </ul>
             </div>

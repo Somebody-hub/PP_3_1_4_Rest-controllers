@@ -32,10 +32,10 @@
             <div class="sidebar-sticky">
                 <ul class="nav nav-pills flex-column">
                     <li class="nav-item">
-                        <a class="nav-link active" th:href="@{/Admin}">Admin</a>
+                        <a class="nav-link active" th:href="@{/users}">Admin</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" th:href="@{/User}">User</a>
+                        <a class="nav-link" th:href="@{/userInfo}">User</a>
                     </li>
                 </ul>
             </div>
@@ -91,8 +91,8 @@
                                                      th:id="'modal-editing'+${user.getId()}" tabindex="-1"
                                                      role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
                                                     <div class="modal-dialog" role="document">
-                                                        <form th:method="POST"
-                                                              th:action="@{/Admin/{id}/edit(id=${user.id})}"
+                                                        <form th:method="put"
+                                                              th:action="@{/users}"
                                                               th:object="${user}">
                                                             <div class="modal-content">
                                                                 <div class="modal-header">
@@ -110,6 +110,7 @@
                                                                                class="col-form-label mt-n2 mb-n2">ID </label>
                                                                         <input type="text" class="form-control form-control-sm mb-1"
                                                                                th:id="'id_edit'+${user.getId()}"
+                                                                               th:name="id"
                                                                                th:value="${user.getId()}" readonly>
                                                                         <label th:for="'name_edit'+${user.getId()}"
                                                                                class="col-form-label mt-1 mb-n2">First
@@ -174,8 +175,8 @@
                                                      role="dialog" aria-labelledby="deleteModalLabel"
                                                      aria-hidden="true">
                                                     <div class="modal-dialog" role="document">
-                                                        <form th:method="post"
-                                                              th:action="@{/Admin/{id}/delete(id=${user.getId()})}">
+                                                        <form th:method="delete"
+                                                              th:action="@{/users/{id}(id=${user.getId()})}">
                                                             <div class="modal-content">
                                                                 <div class="modal-header">
                                                                     <h5 class="modal-title" id="deleteModalLabel">Delete
@@ -253,7 +254,7 @@
                             <div class="card">
                                 <div class="card-header h5">Add new user</div>
                                 <div class="card-body m-auto col-4 text-center font-weight-bold">
-                                    <form th:method="POST" th:action="@{/Admin/new}" th:object="${newUser}">
+                                    <form th:method="POST" th:action="@{/users}" th:object="${newUser}">
                                         <div class="form-group">
                                             <label for="firstname" class="col-form-label mt-n2 mb-n2">First name</label>
                                             <input type="text" class="form-control form-control-sm mb-1" id="firstname"
@@ -265,8 +266,13 @@
                                             <input type="number" class="form-control form-control-sm mb-1" id="age"
                                                    th:field="*{age}" placeholder="Age">
                                             <label for="email" class="col-form-label mt-1 mb-n2">Email</label>
-                                            <input type="text" class="form-control form-control-sm mb-1" id="email"
+                                            <input type="email" class="form-control form-control-sm mb-1" id="email"
                                                    th:field="*{email}" placeholder="Email">
+
+                                            <div class="invalid-tooltip">
+                                                Enter unique email
+                                            </div>
+
                                             <label for="password" class="col-form-label mt-1 mb-n2">Password</label>
                                             <input type="password" class="form-control form-control-sm mb-1" id="password"
                                                    th:field="*{password}" placeholder="Password">

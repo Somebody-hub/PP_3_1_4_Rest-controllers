@@ -13,7 +13,7 @@ import java.security.Principal;
 
 
 @Controller
-@RequestMapping("/User")
+@RequestMapping("/userInfo")
 public class UserController {
 
     private UserService userService;
@@ -27,7 +27,7 @@ public class UserController {
     public String getUserPage(Principal principal, ModelMap model) {
         User user = userService.findByEmail(principal.getName());
         model.addAttribute(user);
-        return "/User/userInfo";
+        return "/user/userInfo";
     }
 
 }

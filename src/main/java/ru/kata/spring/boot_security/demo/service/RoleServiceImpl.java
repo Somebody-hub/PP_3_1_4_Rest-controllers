@@ -1,6 +1,7 @@
 package ru.kata.spring.boot_security.demo.service;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.kata.spring.boot_security.demo.dao.RoleDao;
 import ru.kata.spring.boot_security.demo.model.Role;
 
@@ -16,17 +17,20 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Role> getAllRoles() {
         return roleDao.findAll();
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Set<Role> getSelectedRoles(Set<String> roles) {
         return roleDao.findAllByNameIn(roles);
     }
 
     @Override
-    public void addRole(Role role) {
-        roleDao.save(role);
+    @Transactional
+    public Role addRole(Role role) {
+        return roleDao.save(role);
     }
 }

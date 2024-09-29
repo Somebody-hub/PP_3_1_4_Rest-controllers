@@ -25,13 +25,7 @@ public class INIT {
 
     @PostConstruct
     public void init() {
-        Role admin = new Role("ADMIN");
-        Role user = new Role("USER");
-        roleService.addRole(admin);
-        roleService.addRole(user);
-        userService.addUser(new User("admin", "admin", 20, "admin", "admin", Set.of(admin, user)));
-        userService.addUser(new User("user", "user", 20, "user", "user", Set.of(user)));
-
-
+        userService.addUser(new User("admin", "admin", 20, "admin@q.q", "admin", Set.of(roleService.addRole(new Role("ADMIN")))));
+        userService.addUser(new User("user", "user", 20, "user@q.q", "user", Set.of(roleService.addRole(new Role("USER")))));
     }
 }

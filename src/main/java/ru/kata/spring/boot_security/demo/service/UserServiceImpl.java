@@ -40,36 +40,38 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public void updateUser(Long id, User user) {
+    public void updateUser(User user) {
         if (user.getPassword().isEmpty()) {
-            user.setPassword(userDao.getById(id).getPassword());
+            user.setPassword(userDao.getById(user.getId()).getPassword());
         }
         if (user.getRoles() == null) {
-            user.setRoles(userDao.getById(id).getRoles());
+            user.setRoles(userDao.getById(user.getId()).getRoles());
         }
         userDao.save(user);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public User getUserById(Long id) {
         return userDao.getById(id);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<User> getAllUsers() {
         return userDao.findAllByDeletedIsFalse();
     }
 
+    @Transactional(readOnly = true)
     @Override
     public User findByEmail(String email) {
         return userDao.findByEmailAndDeletedIsFalse(email);
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userDao.findByEmailAndDeletedIsFalse(username);
-
         if (user == null) {
             throw new UsernameNotFoundException("User not found");
         }

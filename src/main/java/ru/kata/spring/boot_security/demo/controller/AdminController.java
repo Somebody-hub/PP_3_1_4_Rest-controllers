@@ -15,7 +15,7 @@ import java.security.Principal;
 
 
 @Controller
-@RequestMapping("/Admin")
+@RequestMapping("/users")
 public class AdminController {
 
     private UserService userService;
@@ -27,41 +27,43 @@ public class AdminController {
         this.userService = userService;
     }
 
+
     @GetMapping("")
     public String printUsers(ModelMap model, @AuthenticationPrincipal UserDetails actualUser) {
         model.addAttribute("users", userService.getAllUsers());
         model.addAttribute("roles", roleService.getAllRoles());
         model.addAttribute("newUser", new User());
         model.addAttribute("actualUser", actualUser);
-        return "Admin/allUsers";
+        return "admin/allUsers";
     }
 
-    @PostMapping("/{id}/edit")
-    public String updateUser(@ModelAttribute("user") User user, @PathVariable("id") Long id) {
-        userService.updateUser(id, user);
-        return "redirect:/Admin";
+    @PutMapping("")
+    public String updateUser(@ModelAttribute("user") User user) {
+        userService.updateUser(user);
+        return "redirect:/users";
     }
 
-    @PostMapping("/new")
+    @PostMapping("")
     public String addUser(@ModelAttribute("user") User user) {
         if (userService.findByEmail(user.getEmail()) != null) {
-            return "redirect:/Admin";
+            return "redirect:/users";
+        } else {
+            userService.addUser(user);
+            return "redirect:/users";
         }
-        userService.addUser(user);
-        return "redirect:/Admin";
     }
 
-    @RequestMapping(value = "/{id}/delete")
+    @DeleteMapping("/{id}")
     public String deleteUser(@PathVariable("id") Long id) {
         userService.deleteUserById(id);
-        return "redirect:/Admin";
+        return "redirect:/users";
     }
 
     @GetMapping(value = "/userInfo")
     public String getUserPage(Principal principal, ModelMap model) {
         User user = userService.findByEmail(principal.getName());
         model.addAttribute(user);
-        return "/User/userInfo";
+        return "/user/userInfo";
     }
 
 }

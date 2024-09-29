@@ -1,12 +1,14 @@
 package ru.kata.spring.boot_security.demo.model;
 
 
-import org.hibernate.annotations.LazyCollection;
-import org.hibernate.annotations.LazyCollectionOption;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
 import java.util.Collection;
 import java.util.Set;
 
@@ -14,25 +16,30 @@ import java.util.Set;
 @Table(name = "Users")
 public class User implements UserDetails {
 
-
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    @NotBlank
     private String firstName;
 
+    @NotBlank
     private String lastName;
 
+    @Positive
     private int age;
 
+    @Email
+    @NotBlank
     private String email;
 
+    @NotNull
     private boolean deleted;
 
+    @NotBlank
     private String password;
 
     @ManyToMany
-    @LazyCollection(LazyCollectionOption.FALSE)
     @JoinTable(
             name = "users_roles",
             joinColumns = @JoinColumn(name = "user_id"),
@@ -43,13 +50,13 @@ public class User implements UserDetails {
         this.deleted = false;
     }
 
-    public User(String FirstName, String LastName, int Age, String Email, String Password, Set<Role> roles) {
-        this.firstName = FirstName;
-        this.lastName = LastName;
-        this.age = Age;
-        this.email = Email;
+    public User(String firstName, String lastName, int age, String email, String password, Set<Role> roles) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.age = age;
+        this.email = email;
         this.deleted = false;
-        this.password = Password;
+        this.password = password;
         this.roles = roles;
     }
 
@@ -125,7 +132,7 @@ public class User implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return roles;
+        return this.roles;
     }
 
     @Override
