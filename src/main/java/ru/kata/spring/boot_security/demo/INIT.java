@@ -12,7 +12,6 @@ import java.util.Set;
 
 @Component
 public class INIT {
-
     private UserService userService;
     private RoleService roleService;
 

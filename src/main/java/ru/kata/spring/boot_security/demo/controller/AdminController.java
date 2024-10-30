@@ -13,7 +13,6 @@ import ru.kata.spring.boot_security.demo.service.UserService;
 
 import java.security.Principal;
 
-
 @Controller
 @RequestMapping("/users")
 public class AdminController {
@@ -26,7 +25,6 @@ public class AdminController {
         this.roleService = roleService;
         this.userService = userService;
     }
-
 
     @GetMapping("")
     public String printUsers(ModelMap model, @AuthenticationPrincipal UserDetails actualUser) {
@@ -45,12 +43,8 @@ public class AdminController {
 
     @PostMapping("")
     public String addUser(@ModelAttribute("user") User user) {
-        if (userService.findByEmail(user.getEmail()) != null) {
-            return "redirect:/users";
-        } else {
-            userService.addUser(user);
-            return "redirect:/users";
-        }
+        userService.addUser(user);
+        return "redirect:/users";
     }
 
     @DeleteMapping("/{id}")
@@ -65,5 +59,4 @@ public class AdminController {
         model.addAttribute(user);
         return "/user/userInfo";
     }
-
 }

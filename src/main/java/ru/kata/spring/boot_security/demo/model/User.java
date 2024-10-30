@@ -5,10 +5,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Positive;
+import javax.validation.constraints.*;
 import java.util.Collection;
 import java.util.Set;
 
@@ -20,25 +17,26 @@ public class User implements UserDetails {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @NotBlank
+    @NotBlank(message = "Enter first name")
     private String firstName;
 
-    @NotBlank
+    @NotBlank(message = "Enter last name")
     private String lastName;
 
-    @Positive
+    @Positive(message = "Enter age")
     private int age;
 
-    @Email
-    @NotBlank
+    @Email(message = "Enter correct email")
+    @NotBlank(message = "Enter email")
     private String email;
 
     @NotNull
     private boolean deleted;
 
-    @NotBlank
+    @NotEmpty(message = "Enter password")
     private String password;
 
+    @NotEmpty(message = "Select role")
     @ManyToMany
     @JoinTable(
             name = "users_roles",

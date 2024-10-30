@@ -16,9 +16,7 @@ public class Role implements GrantedAuthority {
     @NotBlank
     private String name;
 
-    public Role() {
-
-    }
+    public Role() {}
 
     public Role(String name) {
         this.name = name;
