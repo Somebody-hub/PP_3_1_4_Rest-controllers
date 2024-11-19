@@ -1,5 +1,6 @@
 package ru.kata.spring.boot_security.demo;
 
+import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.kata.spring.boot_security.demo.model.Role;
@@ -7,7 +8,7 @@ import ru.kata.spring.boot_security.demo.model.User;
 import ru.kata.spring.boot_security.demo.service.RoleService;
 import ru.kata.spring.boot_security.demo.service.UserService;
 
-import javax.annotation.PostConstruct;
+
 import java.util.Set;
 
 @Component

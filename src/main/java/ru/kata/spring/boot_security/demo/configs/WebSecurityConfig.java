@@ -5,16 +5,16 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import ru.kata.spring.boot_security.demo.service.UserServiceImpl;
 
 @Configuration
 @EnableWebSecurity
-public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+public class WebSecurityConfig{
     private final SuccessUserHandler successUserHandler;
     private final UserServiceImpl userServiceImpl;
 
@@ -24,24 +24,35 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         this.userServiceImpl = userServiceImpl;
     }
 
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
+
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .authorizeRequests()
-                .antMatchers("/")
-                .hasAnyAuthority("USER", "ADMIN")
-                .antMatchers("/Admin/**")
-                .hasAnyAuthority("ADMIN")
-                .antMatchers("/User/userInfo")
-                .hasAnyAuthority("USER", "ADMIN")
-                .and()
-                .formLogin()
-                .successHandler(successUserHandler)
-                .permitAll()
-                .and()
-                .logout()
-                .permitAll();
+                .formLogin(formLogin -> formLogin
+                        .successHandler(successUserHandler)
+                        .loginProcessingUrl("/login")
+                        .usernameParameter("email")
+                        .passwordParameter("password")
+                        .permitAll()
+                )
+                .authorizeHttpRequests(authorize -> authorize
+                        .requestMatchers("/index",
+                                "/login")
+                        .permitAll()
+                        .requestMatchers("/**").hasAnyRole("ADMIN", "USER").anyRequest().authenticated()
+                )
+                .csrf(csrf -> csrf
+                        .disable())
+                .logout(logout -> logout
+                        .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+                        .logoutSuccessUrl("/login?logout")
+                        .permitAll()
+                );
+
+
+        return http.build();
     }
+
 
     @Bean
     public BCryptPasswordEncoder bCryptPasswordEncoder() {
@@ -53,12 +64,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
         authProvider.setUserDetailsService(userServiceImpl);
         authProvider.setPasswordEncoder(bCryptPasswordEncoder());
-
         return authProvider;
     }
 
-    @Override
-    public void configure(AuthenticationManagerBuilder auth) {
-        auth.authenticationProvider(authenticationProvider());
-    }
 }
