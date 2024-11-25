@@ -120,16 +120,6 @@ public class User implements UserDetails {
     }
 
     @Override
-    public String toString() {
-        return "id = " + this.id
-                + "\n" + "FirstName = " + this.firstName
-                + "\n" + "lastName = " + this.lastName
-                + "\n" + "age = " + this.age
-                + "\n" + "Email " + this.email
-                + "\n" + "deleted" + this.deleted;
-    }
-
-    @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return this.roles;
     }

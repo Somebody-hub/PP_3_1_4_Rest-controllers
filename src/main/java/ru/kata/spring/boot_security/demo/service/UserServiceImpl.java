@@ -11,6 +11,7 @@ import ru.kata.spring.boot_security.demo.dao.UserDao;
 import ru.kata.spring.boot_security.demo.model.User;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -49,13 +50,18 @@ public class UserServiceImpl implements UserService {
         userDao.save(user);
     }
 
-    @Transactional(readOnly = true)
     @Override
     public User getUserById(Long id) {
-        return userDao.getById(id);
+        User user = null;
+        Optional<User> optional = userDao.findById(id);
+        if(optional.isPresent()) {
+            user = optional.get();
+        }
+        return user;
+
+        //return userDao.getById(id);
     }
 
-    @Transactional(readOnly = true)
     @Override
     public List<User> getAllUsers() {
         return userDao.findAllByDeletedIsFalse();

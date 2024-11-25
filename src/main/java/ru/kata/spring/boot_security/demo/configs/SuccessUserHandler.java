@@ -12,6 +12,6 @@ import java.io.IOException;
 public class SuccessUserHandler implements AuthenticationSuccessHandler {
     @Override
     public void onAuthenticationSuccess(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Authentication authentication) throws IOException {
-        httpServletResponse.sendRedirect("/");
+        httpServletResponse.sendRedirect("/info");
     }
 }

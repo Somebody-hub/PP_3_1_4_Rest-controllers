@@ -36,20 +36,11 @@ public class WebSecurityConfig {
                         .permitAll()
                 )
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/index",
-                                "/login")
-                        .permitAll()
-                        .requestMatchers("/**").hasAnyRole("ADMIN", "USER").anyRequest().authenticated()
+                        .requestMatchers("/index",  "/login", "/error").permitAll()
+                        .requestMatchers("/").hasAnyRole("ADMIN", "USER").anyRequest().authenticated()
                 )
-                .csrf(csrf -> csrf
-                        .disable())
-                .logout(logout -> logout
-                        .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
-                        .logoutSuccessUrl("/login?logout")
-                        .permitAll()
-                );
-
-
+                .csrf(csrf -> csrf.disable())
+                .logout(logout -> logout.permitAll());
         return http.build();
     }
 

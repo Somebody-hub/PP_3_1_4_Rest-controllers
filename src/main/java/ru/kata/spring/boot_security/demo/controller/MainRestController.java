@@ -29,11 +29,14 @@ public class MainRestController {
 
     @GetMapping("/users")
     public ResponseEntity<List<User>> getAllUsers() {
+        List<User> Users = userService.getAllUsers();
+        System.out.println(Users.isEmpty());
         return new ResponseEntity<>(userService.getAllUsers(), HttpStatus.OK);
     }
 
     @PutMapping("/users/{id}")
-    public ResponseEntity updateUser(@Valid @RequestBody User user) {
+    public ResponseEntity updateUser(@PathVariable("id") long id,
+                                     @Valid @RequestBody User user) {
         userService.updateUser(user);
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -53,14 +56,14 @@ public class MainRestController {
     @GetMapping("users/{id}")
     public ResponseEntity<User> getUser(@PathVariable("id") long id) {
         User user = userService.getUserById(id);
+        System.out.println(id);
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
     @GetMapping("/user")
     public ResponseEntity<User> getUserPage(Principal principal) {
         User user = userService.findByEmail(principal.getName());
+        System.out.println(user);
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
-
-
 }
