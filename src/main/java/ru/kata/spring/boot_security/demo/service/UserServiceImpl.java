@@ -50,6 +50,7 @@ public class UserServiceImpl implements UserService {
         userDao.save(user);
     }
 
+    @Transactional
     @Override
     public User getUserById(Long id) {
         User user = null;
@@ -58,22 +59,21 @@ public class UserServiceImpl implements UserService {
             user = optional.get();
         }
         return user;
-
-        //return userDao.getById(id);
     }
 
+    @Transactional
     @Override
     public List<User> getAllUsers() {
         return userDao.findAllByDeletedIsFalse();
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     @Override
     public User findByEmail(String email) {
         return userDao.findByEmailAndDeletedIsFalse(email);
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userDao.findByEmailAndDeletedIsFalse(username);

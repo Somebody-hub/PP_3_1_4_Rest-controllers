@@ -5,8 +5,10 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import ru.kata.spring.boot_security.demo.model.Role;
+import ru.kata.spring.boot_security.demo.exception.IncorrectUserException;
+import ru.kata.spring.boot_security.demo.exception.MessageException;
 import ru.kata.spring.boot_security.demo.model.User;
 import ru.kata.spring.boot_security.demo.service.RoleService;
 import ru.kata.spring.boot_security.demo.service.UserService;
@@ -29,22 +31,30 @@ public class MainRestController {
 
     @GetMapping("/users")
     public ResponseEntity<List<User>> getAllUsers() {
-        List<User> Users = userService.getAllUsers();
-        System.out.println(Users.isEmpty());
         return new ResponseEntity<>(userService.getAllUsers(), HttpStatus.OK);
     }
 
     @PutMapping("/users/{id}")
     public ResponseEntity updateUser(@PathVariable("id") long id,
-                                     @Valid @RequestBody User user) {
+                                     @Valid @RequestBody User user, BindingResult bindingResult) {
+        if(bindingResult.hasFieldErrors())
+        {
+            throw new IncorrectUserException();
+        }
         userService.updateUser(user);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PostMapping("/users")
-    public ResponseEntity addUser(@Valid @RequestBody User user) {
+    public ResponseEntity addUser(@Valid @RequestBody User user, BindingResult bindingResult) {
+        if(bindingResult.hasFieldErrors())
+        {
+            throw new IncorrectUserException();
+        }
         userService.addUser(user);
         return new ResponseEntity<>(HttpStatus.OK);
+
+
     }
 
     @DeleteMapping("/users/{id}")
@@ -65,5 +75,13 @@ public class MainRestController {
         User user = userService.findByEmail(principal.getName());
         System.out.println(user);
         return new ResponseEntity<>(user, HttpStatus.OK);
+    }
+
+
+    @ExceptionHandler
+    public ResponseEntity<MessageException> handleException(IncorrectUserException exception) {
+        MessageException data = new MessageException();
+        data.setInfo(exception.getMessage());
+        return new ResponseEntity<>(data, HttpStatus.NOT_FOUND);
     }
 }
